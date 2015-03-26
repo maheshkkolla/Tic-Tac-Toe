@@ -11,12 +11,17 @@ public class TicTacToe {
         System.out.println(board.asPrintable());
         Scanner scanner = new Scanner(System.in);
         while(true){
-            playByTurn(board, "X");
-            playByTurn(board, "O");
+            try{
+                playByTurn(board, "X");
+                playByTurn(board, "O");
+            }catch(InvalidIndexException e){
+                System.out.println(e.getMessage());
+                continue;
+            }
         }
     }
 
-    private static void playByTurn(Board board,String playerSymbol) {
+    private static void playByTurn(Board board,String playerSymbol) throws InvalidIndexException {
         System.out.println("Player: "+playerSymbol);
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter Row Number: ");

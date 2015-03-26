@@ -26,10 +26,15 @@ public class Board {
         }
     }
 
-    public void putValueInCell(int rowId, int colId, String playerSymbol) {
+    public void putValueInCell(int rowId, int colId, String playerSymbol) throws InvalidIndexException {
         for (Cell cell: cells) {
-            if(cell.equals(new Cell(rowId, colId,""))) cell.setValue(playerSymbol);
+            if(cell.isYourIndex(rowId, colId)){
+                if(cell.equals(new Cell(rowId, colId,""))) cell.setValue(playerSymbol);
+                else throw new InvalidIndexException("filled");
+                return;
+            }
         }
+        throw new InvalidIndexException("not present");
     }
 
     public String asPrintable() {
