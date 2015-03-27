@@ -12,9 +12,6 @@ public class Game {
 
     public Game(int size) {
         this.size = size;
-    }
-
-    public void create() {
         for (int i=1;i<= size*size; i++){
             board.add(Character.forDigit(i,10));
         }
@@ -41,10 +38,10 @@ public class Game {
         }
         board.remove(index-1);
         board.add(index-1,symbol);
-        return hasAnyOneWon();
+        return hasGameCompleted();
     }
 
-    private boolean hasAnyOneWon() {
+    private boolean hasGameCompleted() {
         return checkRowWinningStrategy() ||
                 checkColWinningStrategy() ||
                 checkDiagonalsWinningStrategy();
