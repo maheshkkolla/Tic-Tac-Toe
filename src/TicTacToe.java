@@ -6,30 +6,28 @@ import java.util.Scanner;
 public class TicTacToe {
 
     public static void main(String[] args) {
-        Board board = new Board(3,3);
-        board.create();
-        System.out.println(board.asPrintable());
-        Scanner scanner = new Scanner(System.in);
+        Game game = new Game(3);
+        game.create();
+        System.out.println(game.getPrintableBoard());
         while(true){
             try{
-                playByTurn(board, "X");
-                playByTurn(board, "O");
-            }catch(InvalidIndexException e){
+                playByTurn(game, 'X');
+                playByTurn(game, 'O');
+            }catch(InvalidPositionException e){
                 System.out.println(e.getMessage());
-                continue;
             }
         }
     }
 
-    private static void playByTurn(Board board,String playerSymbol) throws InvalidIndexException {
-        System.out.println("Player: "+playerSymbol);
+    private static void playByTurn(Game game,char playerSymbol) throws InvalidPositionException {
+        System.out.println("Player: " + playerSymbol);
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter Row Number: ");
-        int rowId = scanner.nextInt();
-        System.out.println("Enter Col Number: ");
-        int colId = scanner.nextInt();
-        board.putValueInCell(rowId, colId,playerSymbol);
-        System.out.println(board.asPrintable());
+        if(game.putValueInCell(scanner.nextInt(),playerSymbol)){
+            System.out.println(game.getPrintableBoard());
+            System.out.println("Player: "+playerSymbol+" Won");
+            System.exit(0);
+        }
+        System.out.println(game.getPrintableBoard());
     }
 
 }

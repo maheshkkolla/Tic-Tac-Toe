@@ -32,4 +32,8 @@ public class Cell {
     public String asString() {
         return "" + value + "";
     }
+
+    public boolean isValueEmpty() {
+        return value.equals("");
+    }
 }

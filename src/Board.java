@@ -1,68 +1,69 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by maheshkk on 3/26/2015.
  */
 public class Board {
-    List<Cell> cells;
-    int noOfRows;
-    int noOfCols;
+    private char[][] cells;
+    private int noOfRows;
 
-    public Board(int noOfRows, int noOfCols) {
+
+    public Board(int noOfRows) {
+        cells = new char[noOfRows][noOfRows];
+        for(int i=0;i<noOfRows;i++)
+            Arrays.fill(cells[i],' ');
         this.noOfRows = noOfRows;
-        this.noOfCols = noOfCols;
-        cells = new ArrayList<Cell>();
-    }
-    private void addCell(Cell cell){
-        cells.add(cell);
-    }
-
-    public void create() {
-        for(int rowId = 1; rowId <= noOfRows; rowId++){
-            for(int colId = 1; colId <= noOfCols; colId++) {
-                addCell(new Cell(rowId,colId,""));
-            }
-        }
-    }
-
-    public void putValueInCell(int rowId, int colId, String playerSymbol) throws InvalidIndexException {
-        for (Cell cell: cells) {
-            if(cell.isYourIndex(rowId, colId)){
-                if(cell.equals(new Cell(rowId, colId,""))) cell.setValue(playerSymbol);
-                else throw new InvalidIndexException("filled");
-                return;
-            }
-        }
-        throw new InvalidIndexException("not present");
     }
 
     public String asPrintable() {
         StringBuilder board = new StringBuilder("");
-        board.append(getColIndexRepresentation()+System.lineSeparator());
-        board.append("Row"+System.lineSeparator());
-        for (int rowId = 1; rowId <= noOfRows; rowId++){
-            board.append(rowId + "\t\t");
-            for(int colId = 1; colId <= noOfCols; colId++){
-                board.append( getCell(rowId, colId).asString() + "\t\t");
+        board.append(getColHeader() + System.lineSeparator()+"Row"+System.lineSeparator());
+        for (int rowId = 0; rowId < noOfRows; rowId++) {
+            board.append(rowId+"\t");
+            for (int colId = 0; colId < noOfRows; colId++) {
+                board.append("\t" + cells[rowId][colId]);
             }
-            board.append(System.lineSeparator()+System.lineSeparator());
+            board.append(System.lineSeparator());
         }
         return board.toString();
     }
 
-    private Cell getCell(int rowId, int colId) {
-        for(Cell cell: cells){
-            if(cell.isYourIndex(rowId,colId)) return cell;
+    public String getColHeader() {
+        String col = "Col:\t";
+        for (int i=0;i<noOfRows;i++){
+            col += i + "\t";
         }
-        return null;
+        return col;
     }
 
-    public String getColIndexRepresentation() {
-        String colIndex = "Col\t\t";
-        for (int i=1; i<=noOfCols;i++){
-            colIndex+=i+"\t\t";
+    public boolean putValueInCell(int rowId, int colId, char playerSymbol) throws InvalidPositionException {
+        char cell;
+        try{
+            cell = cells[rowId][colId];
+        }catch(ArrayIndexOutOfBoundsException e){
+            throw new InvalidPositionException("not present");
         }
-        return colIndex;
+        if(cell == ' '){
+            cells[rowId][colId] = playerSymbol;
+            return checkWin();
+        } else throw new InvalidPositionException("filled");
+
+    }
+
+    private boolean checkWin() {
+        Set<Character> rowSet = new HashSet<Character>();
+        Set<Character> colSet = new HashSet<Character>();
+        for (int rowId=0;rowId<noOfRows;rowId++){
+            for (int colId=0;colId<noOfRows;colId++){
+                rowSet.add(cells[rowId][colId]);
+                colSet.add(cells[colId][rowId]);
+            }
+            if(rowSet.size() == 1 || colSet.size() == 1) return true;
+            rowSet = new HashSet<Character>();
+            colSet = new HashSet<Character>();
+        }
+        return false;
     }
 }
